@@ -1,3 +1,4 @@
+import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 
 import React, { useState } from 'react';
@@ -14,6 +15,9 @@ const RegisterScreen1 = () => {
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [confirmPasswordError, setConfirmPasswordError] = useState('');
+
+  const navigation = useNavigation()
+
 
   const validateForm = () => {
     let valid = true;
@@ -121,7 +125,7 @@ const RegisterScreen1 = () => {
         </TouchableOpacity>
 
         {/* Optional: Login link */}
-        <TouchableOpacity>
+        <TouchableOpacity onPress={()=> {navigation.navigate("LoginScreen")}}>
           <Text style={styles.loginText}>Already have an account? Login</Text>
         </TouchableOpacity>
       </View>
