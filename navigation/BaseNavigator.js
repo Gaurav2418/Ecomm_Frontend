@@ -14,13 +14,15 @@ import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import Entypo from '@expo/vector-icons/Entypo';
+import CardListScreen from "../screens/CardListScreen";
+import ProductSearchScreen from "../screens/ProductSearchScreen";
 
 // import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
 const BaseNavigator = () =>  {
     const Stack = createNativeStackNavigator()
     const Tab = createBottomTabNavigator()
-    const isLoggedIn = true
+    const isLoggedIn = false
 
 
     function BottomTabs() {
@@ -60,8 +62,8 @@ const BaseNavigator = () =>  {
                     />
                 ) : (
                     <Tab.Screen
-                        name="Search"
-                        component={HomeScreen}
+                        name="ProductSearchScreen"
+                        component={ProductSearchScreen}
                         options={{
                             tabBarLabel: "Search",
                             headerShown: false,
@@ -100,6 +102,9 @@ const BaseNavigator = () =>  {
                 <Stack.Screen name="LoginScreen" component={LoginScreen} options={{headerShown:false}} />
                 <Stack.Screen name="BottomTab" component={BottomTabs}  options={{headerShown:false}} />
                 <Stack.Screen name="CreateSale" component={CreateSaleScreen} options={{headerShown:false}} />
+                <Stack.Screen name="cardlist" component={CardListScreen} options={{headerShown:false}} />
+                <Stack.Screen name="ProductSearchScreen" component={ProductSearchScreen} options={{headerShown:false}} />
+                
             </Stack.Navigator>
         </NavigationContainer>
     )
