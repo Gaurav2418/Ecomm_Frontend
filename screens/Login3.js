@@ -1,12 +1,32 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, SafeAreaView, StyleSheet, TextInput, TouchableOpacity, Alert } from 'react-native';
 import axios from "axios";
+import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Login3 = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
+
+  const navigation = useNavigation()
+  
+
+  useEffect(() => {
+    const checkLoginStatus = async () => {
+      try {
+        const token = await AsyncStorage.getItem("@authToken");
+
+        if (token) {
+          navigation.replace("BottomTab");
+        }
+      } catch (err) {
+        console.log("error message", err);
+      }
+    };
+    checkLoginStatus();
+  }, []);
 
   const validateForm = () => {
     let valid = true;
@@ -36,12 +56,30 @@ const Login3 = () => {
         if (validateForm()) {
             const data = await axios.post('https://ecomm-153c.onrender.com/api/login',
                 {email, password} )
-                // console.log(data)
+                const userData = data.data
+                const persistent = {
+                  token: userData.token,
+                  email: userData.user.email,
+                  userName: userData.user.name,
+                  role: userData.user.role
+                }
+                // const token = userData.token;
+                AsyncStorage.setItem("@authToken", JSON.stringify(persistent));
+                console.log(userData)
+                console.log("persistent==", persistent)
             Alert.alert('Login Successful', `Welcome back, ${email}!`);
             // Handle login logic here (e.g., make API call)
+            navigation.replace("BottomTab")
           }
     } catch (error) {
         console.log(error)
+            if (error.response.status === 401){
+              Alert.alert(error.response.data.message)
+          }else if (error.response.status === 400){
+              Alert.alert("Please enter correct username or password")
+          }else if (error.response.status === 404){
+            Alert.alert("User not found")
+        }
     }
   };
 
@@ -82,7 +120,7 @@ const Login3 = () => {
 
         {/* Optional: Signup link */}
         <TouchableOpacity>
-          <Text style={styles.signupText}>Don't have an account? Sign Up</Text>
+          <Text style={styles.signupText} onPress={()=> {navigation.navigate("RegisterScreen")}}>Don't have an account? Sign Up</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
