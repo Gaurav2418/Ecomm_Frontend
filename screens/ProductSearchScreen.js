@@ -62,6 +62,7 @@ const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTNiZjZjYmYzNTA0
 
 
     const opArray = response.data
+    console.log(opArray)
     let results =[...opArray]
 
 
@@ -72,9 +73,9 @@ const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTNiZjZjYmYzNTA0
       
       results = results.filter(item => 
         // Check product name
-        item.name.toLowerCase().includes(query) ||
+        item.product.toLowerCase().includes(query) ||
         // Check brand name
-        item.brand.toLowerCase().includes(query) ||
+        item.brands.toLowerCase().includes(query) ||
         // Check category name
         item.category.toLowerCase().includes(query)
       );
@@ -98,13 +99,15 @@ const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTNiZjZjYmYzNTA0
     
     // Apply brand filter
     if (selectedBrand !== 'All') {
-      results = results.filter(item => item.brand === selectedBrand);
+      results = results.filter(item => item.brands === selectedBrand);
     }
     
     // Apply category filter
     if (selectedCategory !== 'All') {
       results = results.filter(item => item.category === selectedCategory);
     }
+
+
     console.log(results)
     setFilteredProducts(results);
   };
@@ -146,7 +149,7 @@ const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTNiZjZjYmYzNTA0
                     styles.optionButton,
                     selectedBrand === brand && styles.selectedOptionButton
                   ]}
-                  onPress={() => setSelectedBrand(brand)}
+                  onPress={() => setSelectedBrand(brand.toLowerCase())}
                 >
                   <Text style={[
                     styles.optionText,
@@ -170,7 +173,7 @@ const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTNiZjZjYmYzNTA0
                     styles.optionButton,
                     selectedCategory === category && styles.selectedOptionButton
                   ]}
-                  onPress={() => setSelectedCategory(category)}
+                  onPress={() => setSelectedCategory(category.toLowerCase())}
                 >
                   <Text style={[
                     styles.optionText,
@@ -205,9 +208,9 @@ const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTNiZjZjYmYzNTA0
 
   const renderItem = ({ item }) => (
     <View style={styles.card}>
-      <Text style={styles.productName}>{item._id}</Text>
+      <Text style={styles.productName}>{item.product}</Text>
       <Text style={styles.productDetails}>
-        Brand: {item.brand} | Category: {item.category}
+        Brand: {item.brands} | Category: {item.category}
       </Text>
     </View>
   );
@@ -270,7 +273,7 @@ const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTNiZjZjYmYzNTA0
       {/* Product List */}
       <FlatList
         data={filteredProducts}
-        keyExtractor={(item) => item.id.toString()}
+        keyExtractor={(item) => item._id.toString()}
         renderItem={renderItem}
         contentContainerStyle={styles.listContainer}
         ListEmptyComponent={
