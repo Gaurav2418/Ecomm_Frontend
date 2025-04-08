@@ -57,7 +57,7 @@ const RegisterScreen1 = () => {
   const handleRegister = async () => {
    try {
     if (validateForm()) {
-      const Data = await axios.post('https://ecomm-153c.onrender.com/api/register', {name, email:email.toLocaleLowerCase(), password, role})
+      const Data = await axios.post('https://ecomm-153c.onrender.com/api/register', {name, email:email.toLocaleLowerCase().trim(), password, role})
       console.log(Data.data)
       Alert.alert('Registration Successful', `Welcome, ${name}!`);
       // Handle registration logic here (e.g., make API call)

@@ -1,10 +1,11 @@
 import axios from "axios";
 import React, { useState } from "react";
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView } from "react-native";
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, Alert } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
 const CreateSaleScreen = () => {
+    const [product, setProduct] = useState('')
     const [category, setCategory] = useState('');
     const [brand, setBrand] = useState('');
     const [description, setDescription] = useState('');
@@ -26,10 +27,15 @@ const CreateSaleScreen = () => {
             };
 
             const response = await axios.post('https://ecomm-153c.onrender.com/api/create-sale', 
-                { brands:brand.trim().toLocaleLowerCase(), category:category.trim().toLocaleLowerCase() }, 
+                { brands:brand.trim().toLocaleLowerCase(), category:category.trim().toLocaleLowerCase(), product:product.trim().toLocaleLowerCase()  }, 
                 config)
 
         console.log(response.data)
+        Alert.alert(response.data.message)
+        setBrand('')
+        setProduct('')
+        setCategory('')
+        setDescription('')
         } catch (error) {
             console.log(error.message)
         }
@@ -39,6 +45,18 @@ const CreateSaleScreen = () => {
     return (
         <ScrollView contentContainerStyle={styles.container}>
             <Text style={styles.heading}>Create a New Sale</Text>
+
+
+            <View style={styles.inputCard}>
+                <Text style={styles.label}>Product</Text>
+                <TextInput
+                    style={styles.input}
+                    placeholder="Enter your Product name here..."
+                    placeholderTextColor="#7c7c7c"
+                    value={product}
+                    onChangeText={setProduct}
+                />
+            </View>
 
             <View style={styles.inputCard}>
                 <Text style={styles.label}>Category</Text>
