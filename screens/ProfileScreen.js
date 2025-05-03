@@ -1,10 +1,15 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import Paycheckout from '../components/Paycheckout';
+import { persistentContext } from '../context/accessContext';
+import axios from 'axios';
+
 
 export default function ProfileScreen() {
+  const {config} = useContext(persistentContext);
   const [ userData, setUserData ] = useState({})
   const navigation = useNavigation();
 
@@ -30,20 +35,37 @@ useEffect(() => {
 const handleLogout = async ()=> {
   try {
       await AsyncStorage.removeItem('@authToken')
+      await AsyncStorage.removeItem('@OwnerProfileid')
       Alert.alert("You've been Loged out")
-      navigation.navigate('LoginScreen')
+
       
        // Reset the navigation stack to prevent going back
-    navigation.reset({
-      index: 0,
-      routes: [{ name: 'LoginScreen' }],
-    });
+       setTimeout(() => {
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'LoginScreen' }],
+        });
+      }, 200)
 
   } catch (error) {
     console.log(error)
   }
 }
 
+
+
+const handleVerifyEmail = async () => {
+const data = await axios.post("https://ecomm-153c.onrender.com/api/verifyemail", {email:config.email})
+console.log("Email verification sent"+ config.email)
+console.log(data.data)  
+}
+
+
+const handleEdit = () => {
+  navigation.navigate('EditProfileScreen');
+  // Pass the userData as a parameter to the EditProfileScreen
+  // This way, you can pre-fill the form with the user's current data
+}
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.profileCard}>
@@ -52,16 +74,25 @@ const handleLogout = async ()=> {
         <Text style={styles.status}>Active Member</Text>
 
         <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.editButton}>
+          <TouchableOpacity style={styles.editButton} >
             <Icon name="edit" size={20} color="#fff" />
-            <Text style={styles.buttonText}>Edit Profile</Text>
+            <Text style={styles.buttonText} onPress={handleEdit}>Edit Profile</Text>
           </TouchableOpacity>
+          < Paycheckout />
+
+          
 
           <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
             <Icon name="logout" size={20} color="black" />
             <Text style={styles.buttonText}>Logout</Text>
           </TouchableOpacity>
+          
         </View>
+        <View>
+          <TouchableOpacity style={{height:50, margin:10,backgroundColor:"orange", padding:10, borderRadius:10}} onPress={handleVerifyEmail}>
+            <Text> Verify Email </Text>
+          </TouchableOpacity>
+          </View>
       </View>
     </SafeAreaView>
   );

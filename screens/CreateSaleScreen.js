@@ -1,34 +1,38 @@
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, Alert } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
+import { persistentContext } from "../context/accessContext";
 
 const CreateSaleScreen = () => {
     const [product, setProduct] = useState('')
     const [category, setCategory] = useState('');
     const [brand, setBrand] = useState('');
     const [description, setDescription] = useState('');
+    const { config, setConfig } = useContext(persistentContext);
 
     const handleSubmit = async () => {
         // console.log('Sale Submitted:', { category, brand, description });
-        // Add your submission logic here
+        
         try {
-            let data = await AsyncStorage.getItem("@authToken");
-            // console.log(data)
-            let loginData = JSON.parse(data);
-            console.log(loginData)
-            const token = loginData.token
-            const config = {
+            // let data = await AsyncStorage.getItem("@authToken");
+            let data = config
+            console.log(data)
+            const configData = {
               headers: {
-                'authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json', // if you need to specify content type
+                'authorization': `Bearer ${data.token}`,
+                'Content-Type': 'application/json', 
               }
             };
 
+        // getting Owner profile document id from Async storage
+        const shopProfile = await AsyncStorage.getItem('@OwnerProfileid')
+        const parsedData = JSON.parse(shopProfile)
+        // console.log("Shop Profile ID:", parsedData._id)
+
             const response = await axios.post('https://ecomm-153c.onrender.com/api/create-sale', 
-                { brands:brand.trim().toLocaleLowerCase(), category:category.trim().toLocaleLowerCase(), product:product.trim().toLocaleLowerCase()  }, 
-                config)
+                { brands:brand.trim().toLocaleLowerCase(), category:category.trim().toLocaleLowerCase(), product:product.trim().toLocaleLowerCase(), shopProfile: parsedData._id }, 
+                configData)
 
         console.log(response.data)
         Alert.alert(response.data.message)

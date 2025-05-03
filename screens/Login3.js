@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, SafeAreaView, StyleSheet, TextInput, TouchableOpacity, Alert } from 'react-native';
 import axios from "axios";
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { persistentContext } from '../context/accessContext';
 
 const Login3 = () => {
   const [email, setEmail] = useState('');
@@ -10,14 +11,18 @@ const Login3 = () => {
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
 
-  const navigation = useNavigation()
-  
+  const navigation = useNavigation();
+  const { config, setConfig } = useContext(persistentContext);
+  // const { setFirstLogin } = useContext(persistentContext);
 
   useEffect(() => {
     const checkLoginStatus = async () => {
       try {
-        const token = await AsyncStorage.getItem("@authToken");
-
+        // const token = await AsyncStorage.getItem("@authToken");
+        const token =  config.token;
+        console.log(config)
+        console.log(token)
+        
         if (token) {
           navigation.replace("BottomTab");
         }
@@ -25,8 +30,8 @@ const Login3 = () => {
         console.log("error message", err);
       }
     };
-    checkLoginStatus();
-  }, []);
+    checkLoginStatus();  
+  }, [config]);
 
   const validateForm = () => {
     let valid = true;
@@ -63,11 +68,13 @@ const Login3 = () => {
                   userName: userData.user.name,
                   role: userData.user.role
                 }
+                // setFirstLogin(userData.user.role);
                 // const token = userData.token;
+                setConfig(persistent);
                 AsyncStorage.setItem("@authToken", JSON.stringify(persistent));
-                console.log(userData)
-                console.log("persistent==", persistent)
-            Alert.alert('Login Successful', `Welcome back, ${email}!`);
+                // console.log(userData)
+                // console.log("persistent==", persistent)
+            Alert.alert('Login Successful', `Welcome back, ${persistent.userName}!`);
             // Handle login logic here (e.g., make API call)
             navigation.replace("BottomTab")
           }
@@ -115,10 +122,10 @@ const Login3 = () => {
 
         {/* Optional: Forgot password link */}
         <TouchableOpacity>
-          <Text style={styles.forgotPassword}>Forgot your password?</Text>
+          <Text style={styles.forgotPassword} onPress={()=> {navigation.navigate("ForgotPasswordScreen")}}>Forgot your password?</Text>
         </TouchableOpacity>
 
-        {/* Optional: Signup link */}
+        {/* Optional: Signup link */} 
         <TouchableOpacity>
           <Text style={styles.signupText} onPress={()=> {navigation.navigate("RegisterScreen")}}>Don't have an account? Sign Up</Text>
         </TouchableOpacity>
