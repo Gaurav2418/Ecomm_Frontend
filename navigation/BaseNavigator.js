@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useContext, useEffect } from "react";
 import { StyleSheet, View, Text } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { persistentContext } from "../context/accessContext";
 
 import HomeScreen from "../screens/HomeScreen";
 import ProfileScreen from "../screens/ProfileScreen";
@@ -16,14 +17,23 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import Entypo from '@expo/vector-icons/Entypo';
 import CardListScreen from "../screens/CardListScreen";
 import ProductSearchScreen from "../screens/ProductSearchScreen";
+import ForgotPasswordScreen from "../screens/ForgotPasswordScreen";
+import NewPasswordScreen from "../screens/NewPasswordScreen";
+import EditProfileScreen from "../screens/EditProfileScreen";
 
 // import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+
+
 
 const BaseNavigator = () =>  {
     const Stack = createNativeStackNavigator()
     const Tab = createBottomTabNavigator()
-    const isLoggedIn = false
-
+    const isLoggedIn = false;
+    
+    const { config, setConfig, firstlogin } = useContext(persistentContext);
+    const role = config?.role || firstlogin
+    console.log("First Login:", firstlogin);
+    console.log("Config:", config);
 
     function BottomTabs() {
         return(
@@ -45,7 +55,8 @@ const BaseNavigator = () =>  {
 
                 {/* Conditionally rendering this tab based on user role  This will need Async storage data we can save this data in global state and use it here(Redux use case) */}
 
-                {isLoggedIn ? (
+                {role == 'shopkeeper' ? (
+                    <>
                     <Tab.Screen
                         name="CreateSale"
                         component={CreateSaleScreen}
@@ -59,7 +70,22 @@ const BaseNavigator = () =>  {
                                     <MaterialIcons name="add-circle-outline" size={30} color="black" />
                                 ),
                         }}
+                    /> 
+                    <Tab.Screen
+                        name="ProductSearchScreen"
+                        component={ProductSearchScreen}
+                        options={{
+                            tabBarLabel: "Search",
+                            headerShown: false,
+                            tabBarIcon: ({ focused }) =>
+                                focused ? (
+                                    <Entypo name="magnifying-glass" size={30} color="black" />
+                                ) : (
+                                    <Entypo name="magnifying-glass" size={30} color="black" />
+                                ),
+                        }}
                     />
+                    </>
                 ) : (
                     <Tab.Screen
                         name="ProductSearchScreen"
@@ -100,11 +126,19 @@ const BaseNavigator = () =>  {
             <Stack.Navigator>
                 <Stack.Screen name="RegisterScreen" component={RegisterScreen} options={{headerShown:false}} />
                 <Stack.Screen name="LoginScreen" component={LoginScreen} options={{headerShown:false}} />
-                <Stack.Screen name="BottomTab" component={BottomTabs}  options={{headerShown:false}} />
+               
+                <Stack.Screen
+      name="BottomTab"
+      options={{ headerShown: false }}
+      children={() => <BottomTabs key={role} />}
+    />
                 <Stack.Screen name="CreateSale" component={CreateSaleScreen} options={{headerShown:false}} />
                 <Stack.Screen name="cardlist" component={CardListScreen} options={{headerShown:false}} />
                 <Stack.Screen name="ProductSearchScreen" component={ProductSearchScreen} options={{headerShown:false}} />
-                
+                <Stack.Screen name="ForgotPasswordScreen" component={ForgotPasswordScreen} options={{headerShown:false}} />
+                <Stack.Screen name="NewPasswordScreen" component={NewPasswordScreen} options={{headerShown:false}} />
+
+                <Stack.Screen name="EditProfileScreen" component={EditProfileScreen} options={{headerShown:false}}></Stack.Screen>
             </Stack.Navigator>
         </NavigationContainer>
     )
