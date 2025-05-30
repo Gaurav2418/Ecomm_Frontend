@@ -9,6 +9,7 @@ const CreateSaleScreen = () => {
     const [category, setCategory] = useState('');
     const [brand, setBrand] = useState('');
     const [description, setDescription] = useState('');
+    const [validity, setValidity] = useState();
     const { config, setConfig } = useContext(persistentContext);
 
     const handleSubmit = async () => {
@@ -28,10 +29,10 @@ const CreateSaleScreen = () => {
         // getting Owner profile document id from Async storage
         const shopProfile = await AsyncStorage.getItem('@OwnerProfileid')
         const parsedData = JSON.parse(shopProfile)
-        // console.log("Shop Profile ID:", parsedData._id)
+        console.log("Shop Profile ID:", parsedData._id)
 
             const response = await axios.post('https://ecomm-153c.onrender.com/api/create-sale', 
-                { brands:brand.trim().toLocaleLowerCase(), category:category.trim().toLocaleLowerCase(), product:product.trim().toLocaleLowerCase(), shopProfile: parsedData._id }, 
+                { brands:brand.trim().toLocaleLowerCase(), category:category.trim().toLocaleLowerCase(), validityDays:validity.trim(), product:product.trim().toLocaleLowerCase(), shopProfile: parsedData._id }, 
                 configData)
 
         console.log(response.data)
@@ -40,6 +41,7 @@ const CreateSaleScreen = () => {
         setProduct('')
         setCategory('')
         setDescription('')
+        setValidity('')
         } catch (error) {
             console.log(error.message)
         }
@@ -81,6 +83,16 @@ const CreateSaleScreen = () => {
                     placeholderTextColor="#7c7c7c"
                     value={brand}
                     onChangeText={setBrand}
+                />
+            </View>
+            <View style={styles.inputCard}>
+                <Text style={styles.label}>Validity Days</Text>
+                <TextInput
+                    style={styles.input}
+                    placeholder="Enter your sale validity in days here..."
+                    placeholderTextColor="#7c7c7c"
+                    value={validity}
+                    onChangeText={setValidity}
                 />
             </View>
 

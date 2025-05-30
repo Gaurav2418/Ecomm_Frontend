@@ -18,22 +18,26 @@ import { SafeAreaView, ScrollView, View, Text, TouchableOpacity, FlatList, Style
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const salesData = [
-  { id: '1', title: '50% Off on Electronics', image: 'https://via.placeholder.com/150' },
-  { id: '2', title: 'Fashion Sale - Up to 70% Off', image: 'https://via.placeholder.com/150' },
-  { id: '3', title: 'Grocery Discounts', image: 'https://via.placeholder.com/150' },
+  { id: '1', title: '50% Off on Electronics', image: 'https://images.unsplash.com/photo-1648316316198-5f15553e55df?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MzB8fFBob25lJTJDJTIwbGFwdG9wJTJDJTIwaGVhZHBob25lc3xlbnwwfHwwfHx8MA%3D%3D', keywords: 'electronics phone laptop earphone earbud' },
+  { id: '2', title: 'Fashion Sale - Up to 70% Off', image: 'https://images.unsplash.com/photo-1600950207944-0d63e8edbc3f?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NDZ8fGNsb3RoaW5nfGVufDB8fDB8fHww', keywords: 'clothing shoes accessories fashion' },
+  { id: '3', title: 'Home Appliances - Up to 10% off', image: 'https://images.unsplash.com/photo-1556185781-a47769abb7ee?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8aG9tZSUyMGFwcGxpYW5jZXN8ZW58MHwxfDB8fHww', keywords: 'iron washing machine hairdryer oven' },
+  { id: '4', title: 'Shoes flat 200 Rs off', image: 'https://images.unsplash.com/photo-1560769629-975ec94e6a86?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8c2hvZXN8ZW58MHwxfDB8fHww',keywords: 'shoes sneakers sandals slippers' },
 ];
 
 const categories = [
-  { id: '1', name: 'Electronics', image: 'https://via.placeholder.com/100' },
-  { id: '2', name: 'Fashion', image: 'https://via.placeholder.com/100' },
-  { id: '3', name: 'Grocery', image: 'https://via.placeholder.com/100' },
-  { id: '4', name: 'Home Decor', image: 'https://via.placeholder.com/100' },
+  { id: '1', name: 'Electronics', image: 'https://images.unsplash.com/photo-1556310917-bfbbc8f73639?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NzJ8fFBob25lJTJDJTIwbGFwdG9wJTJDJTIwaGVhZHBob25lc3xlbnwwfHwwfHx8MA%3D%3D',  keywords: 'electronics phone laptop earphone earbud' },
+  { id: '2', name: 'Fashion', image: 'https://images.unsplash.com/photo-1554568218-0f1715e72254?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NDN8fGNsb3RoaW5nfGVufDB8fDB8fHww', keywords: 'clothing shoes accessories fashion shirt tshirt tops jeans' },
+  { id: '3', name: 'Furniture', image: 'https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8aG9tZSUyMGRlY29yfGVufDB8MXwwfHx8MA%3D%3D', keywords: 'sofa chair table bed wardrobe' },
+  { id: '4', name: 'Home Decor', image: 'https://plus.unsplash.com/premium_photo-1681980021035-5db5823c974b?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8aG9tZSUyMGRlY29yfGVufDB8MXwwfHx8MA%3D%3D', keywords: 'wall art curtains rugs decor flowerpots pots flower' },
+  
+  { id: '5', name: 'Sports', image: 'https://plus.unsplash.com/premium_photo-1666913667023-4bfd0f6cff0a?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8c3BvcnRzJTIwJTIwZXF1aXBtZW50fGVufDB8MXwwfHx8MA%3D%3D', keywords: 'sports shoes sportswear' },
+  { id: '6', name: 'Beauty', image: 'https://images.unsplash.com/photo-1585652757141-8837d676fac8?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MzR8fGJlYXV0eXxlbnwwfDF8MHx8fDA%3D', keywords: 'makeup skincare haircare skin beauty' },
 ];
 
 const trendingDeals = [
-  { id: '1', title: 'Smartphone - 30% Off', image: 'https://via.placeholder.com/120' },
-  { id: '2', title: 'Winter Jacket - 50% Off', image: 'https://via.placeholder.com/120' },
-  { id: '3', title: 'Organic Food - 20% Off', image: 'https://via.placeholder.com/120' },
+  { id: '1', title: 'Smartphone - 30% Off', image: 'https://images.unsplash.com/photo-1640936343842-268f9d87e764?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fFNtYXJ0cGhvbmVzfGVufDB8fDB8fHww', keywords: 'phone smartphone iphone' },
+  { id: '2', title: 'Winter Jacket - 50% Off', image: 'https://plus.unsplash.com/premium_photo-1661598536943-f39f805b99b3?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTd8fHdpbnRlciUyMGphY2tldHN8ZW58MHwwfDB8fHww', keywords: 'jacket winter coat' },
+  { id: '3', title: 'Organic Food - 20% Off', image: 'https://images.unsplash.com/photo-1604337214275-86010944959d?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTl8fG9yZ2FuaWMlMjBmb29kfGVufDB8MHwwfHx8MA%3D%3D' },
 ];
 
 export default function HomeScreen({ navigation }) {
@@ -43,7 +47,7 @@ export default function HomeScreen({ navigation }) {
         {/* Hero Section */}
         <View style={styles.heroSection}>
           <Text style={styles.heroText}>🎉 Discover the Best Sales Around You! 🎉</Text>
-          <TouchableOpacity style={styles.ctaButton} onPress={() => navigation.navigate('Sales')}>
+          <TouchableOpacity style={styles.ctaButton} onPress={() => navigation.navigate('ProductSearchScreen')}>
             <Icon name="explore" size={22} color="#fff" />
             <Text style={styles.ctaText}>Explore Sales</Text>
           </TouchableOpacity>
@@ -58,10 +62,12 @@ export default function HomeScreen({ navigation }) {
             horizontal
             showsHorizontalScrollIndicator={false}
             renderItem={({ item }) => (
-              <View style={styles.saleCard}>
-                <Image source={{ uri: item.image }} style={styles.saleImage} />
-                <Text style={styles.saleTitle}>{item.title}</Text>
-              </View>
+              <TouchableOpacity onPress={() => navigation.navigate('LandingPage', { keywords : item.keywords })}>
+                <View style={styles.saleCard}>
+                  <Image source={{ uri: item.image }} style={styles.saleImage} />
+                  <Text style={styles.saleTitle}>{item.title}</Text>
+                </View>
+              </TouchableOpacity>
             )}
           />
         </View>
@@ -75,10 +81,12 @@ export default function HomeScreen({ navigation }) {
             horizontal
             showsHorizontalScrollIndicator={false}
             renderItem={({ item }) => (
-              <View style={styles.categoryCard}>
-                <Image source={{ uri: item.image }} style={styles.categoryImage} />
-                <Text style={styles.categoryName}>{item.name}</Text>
-              </View>
+              <TouchableOpacity onPress={() => navigation.navigate('LandingPage', { keywords : item.keywords })}>
+                  <View style={styles.categoryCard}>
+                    <Image source={{ uri: item.image }} style={styles.categoryImage} />
+                    <Text style={styles.categoryName}>{item.name}</Text>
+                  </View>
+              </TouchableOpacity>
             )}
           />
         </View>
@@ -90,16 +98,18 @@ export default function HomeScreen({ navigation }) {
             data={trendingDeals}
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
-              <View style={styles.trendingCard}>
-                <Image source={{ uri: item.image }} style={styles.trendingImage} />
-                <Text style={styles.trendingTitle}>{item.title}</Text>
-              </View>
+              <TouchableOpacity onPress={() => navigation.navigate('LandingPage', { keywords : item.keywords })}> 
+                  <View style={styles.trendingCard}>
+                    <Image source={{ uri: item.image }} style={styles.trendingImage} />
+                    <Text style={styles.trendingTitle}>{item.title}</Text>
+                  </View>
+              </TouchableOpacity>
             )}
           />
         </View>
 
         {/* See All Button */}
-        <TouchableOpacity style={styles.seeAllButton} onPress={() => navigation.navigate('Sales')}>
+        <TouchableOpacity style={styles.seeAllButton} onPress={() => navigation.navigate('ProductSearchScreen')}>
           <Text style={styles.seeAllText}>See All Sales</Text>
         </TouchableOpacity>
       </ScrollView>
