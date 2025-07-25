@@ -1,7 +1,8 @@
 // https://snack.expo.dev/bIpkhuJsG5F9o71T5Rtmi
-import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, FlatList, StyleSheet, TouchableOpacity, Modal } from 'react-native';
+import React, { useState, useEffect, useContext } from 'react';
+import { View, Text, TextInput, FlatList, StyleSheet, TouchableOpacity, Modal, Linking } from 'react-native';
 import axios from 'axios';
+import { persistentContext } from '../context/accessContext';
 
 // Sample Product Data
 const products = [
@@ -18,6 +19,7 @@ const brandOptions = ['All', 'Apple', 'Samsung', 'Lenovo'];
 const categoryOptions = ['All', 'Phones', 'Laptops', 'Tablets'];
 
 export default function ProductSearchScreen() {
+  const [allProducts, setAllProducts] = useState();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedBrand, setSelectedBrand] = useState('All');
   const [selectedCategory, setSelectedCategory] = useState('All');
@@ -25,59 +27,91 @@ export default function ProductSearchScreen() {
   const [filterModalVisible, setFilterModalVisible] = useState(false);
   const [activeFiltersCount, setActiveFiltersCount] = useState(0);
 
+  const { config } = useContext(persistentContext);
+
   // Apply filters whenever search or filters change
+  // useEffect(() => {
+  //   filterProducts();
+  //   // fetchProducts()
+  //   // Calculate active filters count
+  //   let count = 0;
+  //   if (selectedBrand !== 'All') count++;
+  //   if (selectedCategory !== 'All') count++;
+  //   setActiveFiltersCount(count);
+  // }, [searchQuery, selectedBrand, selectedCategory]);
+
+// useEffect with setTimeout
   useEffect(() => {
-    filterProducts();
-    // fetchProducts()
-    // Calculate active filters count
+
     let count = 0;
-    if (selectedBrand !== 'All') count++;
-    if (selectedCategory !== 'All') count++;
-    setActiveFiltersCount(count);
+      if (selectedBrand !== 'All') count++;
+      if (selectedCategory !== 'All') count++;
+      setActiveFiltersCount(count);
+
+    const timeout = setTimeout(() => {
+      filterProducts();
+    }, 500);
+  
+    return () => clearTimeout(timeout); // 🧹 cleanup previous timer
   }, [searchQuery, selectedBrand, selectedCategory]);
 
+const token = config.token
 
 
+useEffect(() => {
+  const fetchAllProducts = async () => {
+    const response = await axios.post('https://ecomm-153c.onrender.com/api/search', {},{
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    setAllProducts(response.data);
+    setFilteredProducts(response.data); // Initialize filtered products with all products
+    // console.log(response.data)
 
-const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTNiZjZjYmYzNTA0ZWYxYTNhY2JlNyIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzQzMTUwNjI4fQ.AT8JqEB36KQKV26ZN7TFfZFN9oZAc6Oxf-mfHxOIEGM"
-
-
-
+  }
+  fetchAllProducts();
+},
+[])
 
 
   const filterProducts = async () => {
     // let results = [...products];
 
     
-    const response = await axios.post('https://ecomm-153c.onrender.com/api/search', {
-      brands: selectedBrand !== 'All' ? selectedBrand : null,
-      category: selectedCategory !== 'All' ? selectedCategory : null,
-    }, {
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    // const response = await axios.post('https://ecomm-153c.onrender.com/api/search', {
+    //   brands: selectedBrand !== 'All' ? selectedBrand : null,
+    //   category: selectedCategory !== 'All' ? selectedCategory : null,
+    // }, {
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //     Authorization: `Bearer ${token}`,
+    //   },
+    // });
     
 
+    let results = [...allProducts]
 
-    const opArray = response.data
-    console.log(opArray)
-    let results =[...opArray]
+    // const opArray = response.data
+    // console.log(opArray)
+    // let results =[...opArray]
 
 
 
     // Enhanced unified search - check all fields
-    if (searchQuery.trim()) {
+    if (searchQuery) {
       const query = searchQuery.toLowerCase().trim();
       
       results = results.filter(item => 
         // Check product name
-        item.product.toLowerCase().includes(query) ||
+        (item.product && item.product.toLowerCase().includes(query)) ||
         // Check brand name
-        item.brands.toLowerCase().includes(query) ||
+        (item.brands && item.brands.toLowerCase().includes(query)) ||
         // Check category name
-        item.category.toLowerCase().includes(query)
+        (item.category && item.category.toLowerCase().includes(query))||
+        // checking for keywords
+        (item.keyWords && item.keyWords.toLowerCase().includes(query))
       );
       
       // If we have an exact match for a brand in the search query, automatically set that filter
@@ -85,7 +119,7 @@ const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTNiZjZjYmYzNTA0
         brand !== 'All' && brand.toLowerCase() === query
       );
       if (matchedBrand && selectedBrand === 'All') {
-        setSelectedBrand(matchedBrand);
+        setSelectedBrand(matchedBrand.toLowerCase());
       }
       
       // If we have an exact match for a category in the search query, automatically set that filter
@@ -93,7 +127,7 @@ const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTNiZjZjYmYzNTA0
         category !== 'All' && category.toLowerCase() === query
       );
       if (matchedCategory && selectedCategory === 'All') {
-        setSelectedCategory(matchedCategory);
+        setSelectedCategory(matchedCategory.toLowerCase());
       }
     }
     
@@ -212,6 +246,14 @@ const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3ZTNiZjZjYmYzNTA0
       <Text style={styles.productDetails}>
         Brand: {item.brands} | Category: {item.category}
       </Text>
+      <View style={{flexDirection:"row", justifyContent:"space-evenly"}}>
+          <TouchableOpacity style={{height:30, marginTop:5,backgroundColor:"#6FE6FC", padding:5, borderRadius:10 }} onPress={() => Linking.openURL(item.shopProfile.shopLocation)}>
+                  <Text style={{marginHorizontal:25}}> Go to Shop </Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={{height:30, marginTop:5,backgroundColor:"#FFF085", padding:5, borderRadius:10}} >
+                  <Text style={{marginHorizontal:25}}> more details </Text>
+          </TouchableOpacity>
+      </View>
     </View>
   );
 

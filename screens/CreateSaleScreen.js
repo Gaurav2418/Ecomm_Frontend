@@ -32,10 +32,9 @@ const CreateSaleScreen = () => {
         console.log("Shop Profile ID:", parsedData._id)
 
             const response = await axios.post('https://ecomm-153c.onrender.com/api/create-sale', 
-                { brands:brand.trim().toLocaleLowerCase(), category:category.trim().toLocaleLowerCase(), validityDays:validity.trim(), product:product.trim().toLocaleLowerCase(), shopProfile: parsedData._id }, 
+                { brands:brand.trim().toLowerCase(), category:category.trim().toLowerCase(), validityDays:validity.trim(), product:product.trim().toLowerCase(), shopProfile: parsedData._id }, 
                 configData)
-
-        console.log(response.data)
+        // console.log(response.data)
         Alert.alert(response.data.message)
         setBrand('')
         setProduct('')
@@ -44,6 +43,10 @@ const CreateSaleScreen = () => {
         setValidity('')
         } catch (error) {
             console.log(error.message)
+            const errorMessage =
+                                error?.response?.data?.message || error.message || 'Something went wrong.';
+            Alert.alert('Error', `${errorMessage}. Please subscribe to our plans to create your first sale.`);
+           
         }
         
     };
